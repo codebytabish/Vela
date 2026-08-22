@@ -19,7 +19,7 @@ const GetStarted = () => {
     }
     setIsSubmitting(true)
     try {
-      // TODO: replace with real signup API call
+      // TODO: replace with real signup API call 
       // await api.post('/auth/register', formData)
       toast.success('Account created')
       navigate('/candidate')

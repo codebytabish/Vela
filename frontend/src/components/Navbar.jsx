@@ -25,7 +25,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className='w-full bg-[#EEF0EC] relative'>
+    <nav className='w-full bg-[#EEF0EC] relative border-b border-[#DBDCD3] '>
       <div className='flex justify-between items-center px-5 h-16'>
 
         <div className='flex items-center gap-[2px]'>
