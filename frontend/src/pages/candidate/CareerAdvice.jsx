@@ -50,7 +50,7 @@ const CareerAdvice = () => {
     setInput('')
     setThinking(true)
 
-    // Simulated AI reply — replace with a real backend call later.
+    // Simulated AI reply — i will replace it  with a real backend call later.
     setTimeout(() => {
       const reply = canned[Math.floor(Math.random() * canned.length)]
       setMessages((prev) => [...prev, { id: Date.now() + 1, from: 'ai', text: reply }])

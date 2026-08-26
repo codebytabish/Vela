@@ -6,8 +6,8 @@ export const recruiterNav = [
   {
     label: 'Jobs',
     items: [
-      { to: '/recuiter/create', label: 'Create job' },
-      { to: '/recuiter/manage', label: 'Manage Jobs' },
+      { to: '/recruiter/create', label: 'Create job' },
+      { to: '/recruiter/manage', label: 'Manage Jobs' },
     ],
   },
   {
@@ -20,8 +20,8 @@ export const recruiterNav = [
   {
     label: 'Pipeline',
     items: [
-      { to: '/recuiter/pipeline', label: 'Pipeline board' },
-      { to: '/recuiter/scheduling', label: 'Interview scheduling' },
+      { to: '/recruiter/pipeline', label: 'Pipeline board' },
+      { to: '/recruiter/scheduling', label: 'Interview scheduling' },
     ],
   },
   {

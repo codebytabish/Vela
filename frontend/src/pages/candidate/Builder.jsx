@@ -149,7 +149,7 @@ const removeSkillItem = (id) => {
                                     <textarea
                                         className={`${inputClass} min-h-[90px] resize-y`}
                                         value={formData.experience}
-                                        onChange={set('eperience')}
+                                        onChange={set('experience')}
                                     />
                                 </div>
 
@@ -286,7 +286,12 @@ const removeSkillItem = (id) => {
 
                 {/* right — live preview */}
                 <div className='bg-white border border-[#DBDCD3] rounded-md p-8 lg:sticky lg:top-5 h-fit'>
+                    <div className=' flex justify-between'>
                     <h2 className='font-serif text-xl font-semibold text-[#0F1A2B]'>{formData.name}</h2>
+                     <button className='border border-[#DBDCD3] cursor-pointer text-white bg-[#C98A3E] hover:bg-[#B67B33] rounded py-1.5 px-3 text-xs  transition-colors shrink-0'>
+                 Download PDF
+                 </button>
+                 </div>
                     <p className='text-[12.5px] text-[#3C4A5E] mb-4'>{formData.title} · {formData.location}</p>
                     <p className='text-[13px] text-[#2B333F] leading-relaxed'>{formData.summary}</p>
 

@@ -45,8 +45,8 @@ const RecruiterLayout = () => {
             MF
           </div>
           <div>
-            <div className='text-[12.5px] font-semibold text-white'>Marisol Ferreira</div>
-            <div className='text-[11px] text-[#8B96A8]'>Product Designer</div>
+            <div className='text-[12.5px] font-semibold text-white'>David Kwan</div>
+            <div className='text-[11px] text-[#8B96A8]'>Talent Partner, Northwind Health</div>
           </div>
         </div>
       </div>
