@@ -22,6 +22,10 @@ import Upload from './pages/candidate/Upload';
 
 import RecruiterLayout from './components/layout/RecruiterLayout';
  import RecruiterDashboard from './pages/recruiter/RecruiterDashboard'; 
+import CreateJobs from "./pages/recruiter/CreateJobs";
+import ManageJobs from "./pages/recruiter/ManageJobs";
+import AiRanking from "./pages/recruiter/AiRanking";
+import CandidateProfile from "./pages/recruiter/CandidateProfile";
 
 function App() {
   return (
@@ -49,6 +53,11 @@ function App() {
 
       <Route path="/recruiter" element={<RecruiterLayout />}>
         {<Route index element={<RecruiterDashboard />} /> }
+        <Route path="create" element={<CreateJobs />} />
+        <Route path="manage" element={<ManageJobs />} />
+        <Route path="ranking" element={<AiRanking />} />
+        <Route path="profile" element={<CandidateProfile />} />
+
       </Route>
     </Routes>
   )

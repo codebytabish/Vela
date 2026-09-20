@@ -35,6 +35,9 @@ const [formData, setFormData] = useState({
       // TODO: replace with real signup API call 
       // await api.post('/auth/register', formData)
       toast.success('Account created')
+       if (accountType === 'employer'){
+        navigate('/recruiter')
+       }else
       navigate('/candidate')
     } catch (err) {
       toast.error("Couldn't create your account. Try again.")
