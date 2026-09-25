@@ -31,7 +31,11 @@ export const recruiterNav = [
 
   {
     label: 'Account',
-    items: [{ to: '/recruiter/messages', label: 'Messages' }],
-    items: [{ to: '/recruiter/settings', label: 'Settings' }],
+
+     label: 'Account',
+    items: [
+      { to: '/recruiter/messages', label: 'Messages' },
+      { to: '/recruiter/settings', label: 'Settings' },
+    ],
   },
 ]

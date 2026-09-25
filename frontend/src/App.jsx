@@ -26,6 +26,9 @@ import CreateJobs from "./pages/recruiter/CreateJobs";
 import ManageJobs from "./pages/recruiter/ManageJobs";
 import AiRanking from "./pages/recruiter/AiRanking";
 import CandidateProfile from "./pages/recruiter/CandidateProfile";
+import PipelineBoard from "./pages/recruiter/PipelineBoard";
+import InterviewScheduling from "./pages/recruiter/InterviewScheduling";
+import Analytics from "./pages/recruiter/Analytics";
 
 function App() {
   return (
@@ -57,6 +60,9 @@ function App() {
         <Route path="manage" element={<ManageJobs />} />
         <Route path="ranking" element={<AiRanking />} />
         <Route path="profile" element={<CandidateProfile />} />
+        <Route path="pipeline" element={<PipelineBoard />} />
+        <Route path="scheduling" element={<InterviewScheduling />} />
+        <Route path="analysis" element={<Analytics />} />
 
       </Route>
     </Routes>
