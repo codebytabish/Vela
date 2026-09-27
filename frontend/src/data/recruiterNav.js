@@ -1,4 +1,4 @@
-export const recruiterNav = [
+export const getRecruiterNav = (isOrgAdmin) => [
   {
     label: 'Overview',
     items: [{ to: '/recruiter', label: 'Dashboard', end: true }],
@@ -28,14 +28,23 @@ export const recruiterNav = [
     label: 'Insights',
     items: [{ to: '/recruiter/analysis', label: 'Analytics' }],
   },
-
   {
     label: 'Account',
-
-     label: 'Account',
     items: [
       { to: '/recruiter/messages', label: 'Messages' },
       { to: '/recruiter/settings', label: 'Settings' },
     ],
   },
+
+  ...(isOrgAdmin
+    ? [{
+        label: 'Organization',
+        items: [
+          { to: '/recruiter/company', label: 'Company profile' },
+          { to: '/recruiter/team', label: 'Manage Recruiters' },
+          { to: '/recruiter/permissions', label: 'Roles & Permissions' },
+          // add Manage Recruiters, Roles & Permissions, etc. here as you build them
+        ],
+      }]
+    : []),
 ]

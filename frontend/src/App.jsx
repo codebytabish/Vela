@@ -29,6 +29,21 @@ import CandidateProfile from "./pages/recruiter/CandidateProfile";
 import PipelineBoard from "./pages/recruiter/PipelineBoard";
 import InterviewScheduling from "./pages/recruiter/InterviewScheduling";
 import Analytics from "./pages/recruiter/Analytics";
+import RecruiterSettings from "./pages/recruiter/RecruiterSettings";
+import Messages from "./pages/recruiter/Messages";
+import CompanyProfile from "./pages/recruiter/CompanyProfile";
+import ManageRecruiter from "./pages/recruiter/ManageRecruiter";
+import RolesPermission from "./pages/recruiter/RolesPermission";
+
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import Users from "./pages/admin/Users";
+import AdminCompanies from "./pages/admin/AdminCompanies";
+import AdminModeration from "./pages/admin/AdminModeration";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import SystemHealth from "./pages/admin/SystemHealth";
+import AdminSetting from "./pages/admin/AdminSetting";
+
 
 function App() {
   return (
@@ -63,8 +78,27 @@ function App() {
         <Route path="pipeline" element={<PipelineBoard />} />
         <Route path="scheduling" element={<InterviewScheduling />} />
         <Route path="analysis" element={<Analytics />} />
-
+        <Route path="settings" element={<RecruiterSettings />} />
+        <Route path="messages" element={<Messages />} />
+        <Route path="company" element={<CompanyProfile />} />
+        <Route path="team" element={<ManageRecruiter />} />
+        <Route path="permissions" element={<RolesPermission />} />
       </Route>
+
+            <Route path="/admin" element={<AdminLayout />}>
+  <Route index element={<AdminDashboard />} />
+    <Route path="users" element={<Users />} />
+      <Route path="companies" element={<AdminCompanies />} />
+  <Route path="moderation" element={<AdminModeration />} />
+
+  <Route path="analytics" element={<AdminAnalytics />} />
+    <Route path="health" element={<SystemHealth />} />
+  <Route path="settings" element={<AdminSetting />} />
+
+
+
+                </Route>
+
     </Routes>
   )
 }

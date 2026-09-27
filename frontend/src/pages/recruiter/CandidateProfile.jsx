@@ -5,7 +5,7 @@ const candidateAiRanking = [
     id: 1,
     name: 'Marisol Ferraira',
     experience: "6 years",
-    company: 'Vintage Labs',
+    company: 'Vantage Labs',
   }
 ]
 
