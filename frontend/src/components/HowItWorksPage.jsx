@@ -9,13 +9,13 @@ const stops=[
 
 const HowItWorksPage = () => {
   return (
-    <section className='bg-[#EEF0EC] p-17 border-t  border-[#DBDCD3] 'id='journey'>
+    <section className='bg-[#EEF0EC] p-10 border-t  border-[#DBDCD3] 'id='journey'>
     <div>
       <div>
-        <p className='text-base font-bold  text-[#5C7A6E]/50'> — THE  ROUTE </p>
-        <p className='text-4xl text-[#0F1A2B] font-bold'>
-          Four stops between upload and <br/>
-          offer.
+        <p className='text-base font-bold mb-3 text-[#5C7A6E]'> — THE  ROUTE </p>
+        <p className='md:text-4xl text-2xl text-[#0F1A2B] font-bold font-fraunces'>
+          Four stops between upload and offer. 
+          
         </p>
         <p className='pt-5 text-[#3C4A5E]'>
           Vela's engine handles the parsing and scoring work in the background — you see <br/>
@@ -34,11 +34,11 @@ const HowItWorksPage = () => {
           {stops.map((s) => (
             <div key={s.tag}>
               <div className='w-3.5 h-3.5 rounded-full bg-[#EEF0EC] border-2 border-[#C98A3E] mb-5 relative z-10' />
-              <span className='block font-mono text-[10.5px] tracking-wider uppercase text-[#C98A3E] mb-2.5'>
+              <span className='block font-mono text-[10.5px] tracking-wider uppercase text-[#C98A3E] font-jetbrains mb-2.5'>
                 {s.tag}
               </span>
-              <h3 className='text-[16.5px] font-semibold text-[#0F1A2B] mb-2'>{s.title}</h3>
-              <p className='text-[13.5px] text-[#3C4A5E] leading-relaxed'>{s.body}</p>
+              <h3 className='text-[16.5px] font-semibold text-[#0F1A2B] font-sans mb-2'>{s.title}</h3>
+              <p className='text-[13.5px] text-[#3C4A5E] font-sans leading-relaxed'>{s.body}</p>
             </div>
           ))}
         </div>

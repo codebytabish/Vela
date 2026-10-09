@@ -4,6 +4,7 @@ import GetStarted from "./pages/GetStarted";
 import HowItWorksPage from './components/HowItWorksPage';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 import CandidateLayout from './components/layout/CandidateLayout'
@@ -47,58 +48,63 @@ import AdminSetting from "./pages/admin/AdminSetting";
 
 function App() {
   return (
-    <Routes>
+   <Routes>
+      {/* public */}
       <Route path="/" element={<Landing />} />
       <Route path="/get-started" element={<GetStarted />} />
       <Route path="/how-it-works" element={<HowItWorksPage />} />
-      <Route path="/login" element={<Login/>} />
-      <Route path="/register" element={<Register/>} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-      <Route path="/candidate" element={<CandidateLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="builder" element={<Builder />} />
-        <Route path="upload" element={<Upload />} />
-        <Route path="improve" element={<AiImprovement />} />
-        <Route path="score" element={<AtsScore />} />
-        <Route path="skills" element={<SkillsGraph />} />
-        <Route path="advice" element={<CareerAdvice />} />
-        <Route path="portfolio" element={<Portfolio />} />
-        <Route path="search" element={<Recommendation />} />
-        <Route path="detail" element={<JobDetail />} />
-        <Route path="applications" element={<Applications />} />
-        <Route path="settings" element={<Settings />} />
+      {/* candidate (private) */}
+      <Route element={<ProtectedRoute role="candidate" />}>
+        <Route path="/candidate" element={<CandidateLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="builder" element={<Builder />} />
+          <Route path="upload" element={<Upload />} />
+          <Route path="improve" element={<AiImprovement />} />
+          <Route path="score" element={<AtsScore />} />
+          <Route path="skills" element={<SkillsGraph />} />
+          <Route path="advice" element={<CareerAdvice />} />
+          <Route path="portfolio" element={<Portfolio />} />
+          <Route path="search" element={<Recommendation />} />
+          <Route path="detail" element={<JobDetail />} />
+          <Route path="applications" element={<Applications />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Route>
 
-      <Route path="/recruiter" element={<RecruiterLayout />}>
-        {<Route index element={<RecruiterDashboard />} /> }
-        <Route path="create" element={<CreateJobs />} />
-        <Route path="manage" element={<ManageJobs />} />
-        <Route path="ranking" element={<AiRanking />} />
-        <Route path="profile" element={<CandidateProfile />} />
-        <Route path="pipeline" element={<PipelineBoard />} />
-        <Route path="scheduling" element={<InterviewScheduling />} />
-        <Route path="analysis" element={<Analytics />} />
-        <Route path="settings" element={<RecruiterSettings />} />
-        <Route path="messages" element={<Messages />} />
-        <Route path="company" element={<CompanyProfile />} />
-        <Route path="team" element={<ManageRecruiter />} />
-        <Route path="permissions" element={<RolesPermission />} />
+      {/* recruiter (private) */}
+      <Route element={<ProtectedRoute role="employer" />}>
+        <Route path="/recruiter" element={<RecruiterLayout />}>
+          <Route index element={<RecruiterDashboard />} />
+          <Route path="create" element={<CreateJobs />} />
+          <Route path="manage" element={<ManageJobs />} />
+          <Route path="ranking" element={<AiRanking />} />
+          <Route path="profile" element={<CandidateProfile />} />
+          <Route path="pipeline" element={<PipelineBoard />} />
+          <Route path="scheduling" element={<InterviewScheduling />} />
+          <Route path="analysis" element={<Analytics />} />
+          <Route path="settings" element={<RecruiterSettings />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="company" element={<CompanyProfile />} />
+          <Route path="team" element={<ManageRecruiter />} />
+          <Route path="permissions" element={<RolesPermission />} />
+        </Route>
       </Route>
 
-            <Route path="/admin" element={<AdminLayout />}>
-  <Route index element={<AdminDashboard />} />
-    <Route path="users" element={<Users />} />
-      <Route path="companies" element={<AdminCompanies />} />
-  <Route path="moderation" element={<AdminModeration />} />
-
-  <Route path="analytics" element={<AdminAnalytics />} />
-    <Route path="health" element={<SystemHealth />} />
-  <Route path="settings" element={<AdminSetting />} />
-
-
-
-                </Route>
-
+      {/* admin (private) */}
+      <Route element={<ProtectedRoute role="admin" />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<Users />} />
+          <Route path="companies" element={<AdminCompanies />} />
+          <Route path="moderation" element={<AdminModeration />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="health" element={<SystemHealth />} />
+          <Route path="settings" element={<AdminSetting />} />
+        </Route>
+      </Route>
     </Routes>
   )
 }

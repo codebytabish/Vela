@@ -9,3 +9,9 @@
 @theme {
   --font-jetbrains: "JetBrains Mono", monospace;
 }
+
+@media print {
+  body * { visibility: hidden; }
+  #resume-preview, #resume-preview * { visibility: visible; }
+  #resume-preview { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+}

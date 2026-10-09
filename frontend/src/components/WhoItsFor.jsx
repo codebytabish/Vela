@@ -26,14 +26,13 @@ const audiences = [
     },
   ]
   return (
-    <section className='bg-[#EEF0EC] p-17 border-t border-[#DBDCD3]' id='whoitsfor'>
+    <section className='bg-[#EEF0EC] p-10 border-t border-[#DBDCD3]' id='whoitsfor'>
     <div >
       <div>
-        <p className="text-xs font-bold text-[#5C7A6E]/50"> — Built for the whole hire</p>
-        <h1 className='text-[#0F1A2B] font-bold font-mono text-4xl pt-3'>One chart room, four vantage</h1>
-        <h1 className='text-[#0F1A2B] font-bold font-mono text-4xl'>points.</h1>
+        <p className="text-sm font-bold text-[#5C7A6E] font-jetbrains"> — BUILT FOR THE WHOLE HIRE</p>
+        <h1 className='text-[#0F1A2B] font-bold font-fraunces text-2xl md:text-4xl pt-3'>One chart room, four vantage points.</h1>
         <p className='pt-5 text-[#3C4A5E]'>
-          Candidates, recruiters, and companies each get a workspace tuned to what<br/>
+          Candidates, recruiters, and companies each get a workspace tuned to what hidden:sm<br/>
           they're steering.
         </p>
       </div>

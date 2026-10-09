@@ -6,13 +6,12 @@ Vela is an AI-powered resume and job matching platform designed to help candidat
 
 The platform combines **resume parsing, ATS scoring, semantic matching, skill extraction, missing-skill detection, and AI-powered resume improvement** into one experience.
 
-## 📌 Status
+## Status
 
-**Currently in development 🚧 — frontend only, pre-backend.**
+**Currently in development 🚧 — frontend completed, backend under development.**
 
-Right now this repo contains the landing page and the early candidate portal UI. There is no backend, database, or AI service yet — those are planned (see Roadmap).
 
-## 🚀 Planned Features
+##  Planned Features
 
 ### Candidate
 
@@ -67,12 +66,7 @@ Vela is designed to handle AI-specific tasks directly within the platform rather
 * Tailwind CSS
 * react-hot-toast
 
-### Planned
 
-* **Backend:** Node.js, Express.js, MongoDB, JWT Authentication, REST APIs
-* **AI / ML:** Python, Sentence Transformers, embeddings, semantic similarity, NLP
-* **Infrastructure:** Docker, Redis, Cloudinary, AWS
-* **Frontend additions:** Framer Motion, Axios, Lucide React (as needed)
 
 ## ⚙️ Getting Started
 
@@ -131,29 +125,6 @@ Better Job Match
 
 The matching system is designed to evaluate required skills, preferred skills, experience, keywords, resume structure, semantic similarity, missing skills, and job-specific relevance — surfaced as a match/ATS score with actionable recommendations.
 
-## 🗺️ Roadmap
-
-* [x] Landing page (React, responsive)
-* [x] Candidate portal — sidebar layout + navigation scaffold
-* [ ] Auth (signup/login UI exists; not yet connected to a backend)
-* [ ] Candidate dashboard (full build-out)
-* [ ] Resume upload
-* [ ] Resume parsing
-* [ ] ATS scoring engine
-* [ ] Job matching
-* [ ] Skill extraction
-* [ ] Missing skill detection
-* [ ] AI resume improvement
-* [ ] Job recommendation system
-* [ ] Skills graph
-* [ ] Recruiter portal
-* [ ] AI candidate ranking
-* [ ] Interview scheduling
-* [ ] Company portal
-* [ ] Admin portal
-* [ ] Backend (Express + MongoDB)
-* [ ] AI/ML service
-* [ ] Production deployment
 
 ## 🎯 Project goal
 

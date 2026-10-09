@@ -1,118 +1,131 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { api } from '../../lib/api'
 
-const initialMessages = [
-  {
-    id: 1,
-    from: 'ai',
-    text: "Based on your recent roles, you're well positioned for Staff-level design roles in regulated industries. Want a breakdown of what's missing to get there?",
-  },
-  {
-    id: 2,
-    from: 'user',
-    text: 'Yes — what should I focus on next?',
-  },
-  {
-    id: 3,
-    from: 'ai',
-    text: 'Two things stand out: deeper clinical-domain exposure, and a documented systems-leadership case study. Your Figma and design-systems skills already clear the bar for most Staff postings.',
-  },
-]
-
-const suggestedPaths = [
-  { id: 1, title: 'Staff Product Designer', detail: '2 skill gaps · 3 similar roles open now' },
-  { id: 2, title: 'Design Systems Lead', detail: 'Ready now · 5 roles open' },
-  { id: 3, title: 'Head of Design, small team', detail: '4 skill gaps · leadership track' },
-]
-
-// Very small canned-response set standing in for a real AI backend call.
-const canned = [
-  "That's a fair question — the short version: focus on depth over breadth for the next 6 months rather than picking up new tools.",
-  "Good instinct to ask. I'd prioritize a portfolio case study that shows systems thinking at scale, since that's the gap I keep seeing against Staff-level postings.",
-  "Worth noting: your profile is already strong on execution. What's missing is proof of leading through ambiguity — a project where you set the direction, not just delivered it.",
-]
+const card = 'bg-white border border-[#DBDCD3] rounded-md p-6'
 
 const CareerAdvice = () => {
-  const [messages, setMessages] = useState(initialMessages)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [hasResume, setHasResume] = useState(true)
+  const [paths, setPaths] = useState([])
+  const [questions, setQuestions] = useState([])
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
-  const threadEndRef = useRef(null)
+  const boxRef = useRef(null)
 
   useEffect(() => {
-    threadEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    api('/career/overview')
+      .then((d) => {
+        setHasResume(d.hasResume)
+        if (!d.hasResume) return
+        setPaths(d.paths)
+        setQuestions(d.questions)
+        setMessages([{ role: 'assistant', text: d.intro }])
+      })
+      .catch((e) => setError(e.message || 'Could not load career advice'))
+      .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    if (boxRef.current) boxRef.current.scrollTop = boxRef.current.scrollHeight
   }, [messages, thinking])
 
-  const handleSend = () => {
-    const trimmed = input.trim()
-    if (!trimmed) return
-
-    const userMsg = { id: Date.now(), from: 'user', text: trimmed }
-    setMessages((prev) => [...prev, userMsg])
+  const send = async (text, intent) => {
+    const msg = (text ?? input).trim()
+    if (!msg || thinking) return
+    setMessages((m) => [...m, { role: 'user', text: msg }])
     setInput('')
     setThinking(true)
-
-    // Simulated AI reply — i will replace it  with a real backend call later.
-    setTimeout(() => {
-      const reply = canned[Math.floor(Math.random() * canned.length)]
-      setMessages((prev) => [...prev, { id: Date.now() + 1, from: 'ai', text: reply }])
+    try {
+      const d = await api('/career/ask', { method: 'POST', body: { message: msg, intent } })
+      setMessages((m) => [...m, { role: 'assistant', text: d.reply.text, bullets: d.reply.bullets }])
+    } catch (e) {
+      setMessages((m) => [...m, { role: 'assistant', text: e.message || 'Something went wrong. Try again.' }])
+    } finally {
       setThinking(false)
-    }, 1100)
+    }
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleSend()
-    }
+  if (loading) return <div className='p-5 text-sm text-[#3C4A5E]'>Loading…</div>
+
+  if (!hasResume) {
+    return (
+      <div className='p-5'>
+        <h1 className='text-2xl font-serif font-bold text-[#0F1A2B] mb-2'>Career advice</h1>
+        <div className={card}>
+          <p className='text-sm text-[#3C4A5E] mb-4'>I need your resume to give advice.</p>
+          <div className='flex gap-4'>
+            <Link to='/candidate/builder' className='text-sm font-semibold text-[#C98A3E]'>Build one →</Link>
+            <Link to='/candidate/upload' className='text-sm font-semibold text-[#C98A3E]'>Upload one →</Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className='p-5'>
-
       <div className='mb-5 border-b border-[#DBDCD3] pb-5'>
-        <h1 className='text-2xl md:text-3xl font-medium text-[#0F1A2B]'>Career advice</h1>
-        <p className='text-sm text-[#3C4A5E]/70 mt-1'>AI guidance based on your profile and goals</p>
+        <h1 className='text-2xl font-serif font-bold text-[#0F1A2B]'>Career advice</h1>
+        <p className='text-sm text-[#3C4A5E]/70 mt-1'>Guidance based on your resume, skills and goals</p>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-5'>
+      {error && <p className='text-sm text-[#A6503E] mb-3'>{error}</p>}
+
+      <div className='grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-5 items-start'>
 
         {/* chat */}
-        <div className='bg-white border border-[#DBDCD3] rounded-md p-6 flex flex-col'>
-          <div className='flex flex-col gap-4 mb-5 max-h-[420px] overflow-y-auto pr-1'>
-            {messages.map((m) => (
+        <div className={card}>
+          <div ref={boxRef} className='h-[380px] overflow-y-auto flex flex-col gap-3 pr-1'>
+            {messages.map((m, i) => (
               <div
-                key={m.id}
-                className={`max-w-[78%] px-4 py-3 rounded-[10px] text-[13.5px] leading-relaxed ${
-                  m.from === 'ai'
-                    ? 'bg-[#EEF0EC] border border-[#DBDCD3] self-start rounded-bl-[2px] text-[#0F1A2B]'
-                    : 'bg-[#0F1A2B] text-white self-end rounded-br-[2px]'
+                key={i}
+                className={`max-w-[88%] rounded-lg px-4 py-3 text-[13px] leading-relaxed ${
+                  m.role === 'user'
+                    ? 'self-end bg-[#0F1A2B] text-white'
+                    : 'self-start bg-[#EEF0EC] text-[#0F1A2B]'
                 }`}
               >
-                {m.text}
+                <p>{m.text}</p>
+                {m.bullets?.length > 0 && (
+                  <ul className='list-disc pl-5 mt-2 flex flex-col gap-1.5'>
+                    {m.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                  </ul>
+                )}
               </div>
             ))}
-
             {thinking && (
-              <div className='bg-[#EEF0EC] border border-[#DBDCD3] self-start rounded-[10px] rounded-bl-[2px] px-4 py-3 flex gap-1.5'>
-                <span className='w-1.5 h-1.5 rounded-full bg-[#3C4A5E] animate-bounce [animation-delay:-0.3s]' />
-                <span className='w-1.5 h-1.5 rounded-full bg-[#3C4A5E] animate-bounce [animation-delay:-0.15s]' />
-                <span className='w-1.5 h-1.5 rounded-full bg-[#3C4A5E] animate-bounce' />
-              </div>
+              <div className='self-start bg-[#EEF0EC] rounded-lg px-4 py-3 text-[13px] text-[#3C4A5E]'>Thinking…</div>
             )}
-            <div ref={threadEndRef} />
           </div>
 
-          <div className='flex gap-2.5'>
+          <div className='flex flex-wrap gap-2 mt-4'>
+            {questions.map((q) => (
+              <button
+                key={q.id}
+                disabled={thinking}
+                onClick={() => send(q.label, q.id)}
+                className='cursor-pointer text-xs px-3 py-1.5 rounded-full border border-[#DBDCD3] text-[#3C4A5E] hover:border-[#0F1A2B] hover:text-[#0F1A2B] transition-colors disabled:opacity-50'
+              >
+                {q.label}
+              </button>
+            ))}
+          </div>
+
+          <div className='flex gap-2.5 mt-4'>
             <input
-              type='text'
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder='Ask about a role, skill gap, or career path…'
-              className='flex-1 px-3.5 py-2.5 border border-[#DBDCD3] rounded-lg text-[13.5px] bg-[#EEF0EC] focus:outline-none focus:border-[#C98A3E] transition-colors'
+              onKeyDown={(e) => e.key === 'Enter' && send()}
+              placeholder='Ask about your skills, roles or resume…'
+              className='flex-1 px-3 py-2.5 border border-[#DBDCD3] rounded-[5px] text-[13.5px] text-[#0F1A2B] bg-[#EEF0EC] focus:outline-none focus:border-[#C98A3E]'
             />
             <button
-              onClick={handleSend}
-              className='bg-[#C98A3E] hover:bg-[#B67B33] rounded-lg px-4 text-sm text-white font-medium transition-colors'
+              onClick={() => send()}
+              disabled={thinking || !input.trim()}
+              className='cursor-pointer bg-[#C98A3E] hover:bg-[#B67B33] rounded py-2 px-4 text-sm text-white font-medium transition-colors disabled:opacity-50'
             >
               Send
             </button>
@@ -120,18 +133,38 @@ const CareerAdvice = () => {
         </div>
 
         {/* suggested paths */}
-        <div className='bg-white border border-[#DBDCD3] rounded-md p-6'>
+        <div className={card}>
           <h3 className='font-serif text-base font-semibold text-[#0F1A2B] mb-4'>Suggested paths</h3>
-          <div className='divide-y divide-[#DBDCD3]'>
-            {suggestedPaths.map((p) => (
-              <div key={p.id} className='py-3'>
-                <div className='text-[13px] font-semibold text-[#0F1A2B]'>{p.title}</div>
-                <div className='text-[11.5px] text-[#3C4A5E] mt-1'>{p.detail}</div>
+          <div className='flex flex-col'>
+            {paths.map((p, i) => (
+              <div key={`${p.kind}-${p.title}`} className={`py-4 ${i !== paths.length - 1 ? 'border-b border-[#DBDCD3]' : ''}`}>
+                <div className='flex items-start justify-between gap-3'>
+                  <div>
+                    {p.kind === 'target' && (
+                      <div className='font-mono text-[10px] uppercase tracking-wide text-[#C98A3E] mb-1'>Your target job</div>
+                    )}
+                    <div className='text-[13.5px] font-semibold text-[#0F1A2B]'>{p.title}</div>
+                    <div className='text-xs text-[#3C4A5E] mt-0.5'>{p.label}</div>
+                  </div>
+                  <span className='font-mono text-xs text-[#5C7A6E] shrink-0'>{p.readiness}%</span>
+                </div>
+                <div className='h-1.5 bg-[#DBDCD3] rounded-full overflow-hidden mt-2.5'>
+                  <div className='h-full rounded-full bg-[#5C7A6E]' style={{ width: `${p.readiness}%` }} />
+                </div>
+                {p.gaps.length > 0 && (
+                  <div className='flex flex-wrap gap-1.5 mt-2.5'>
+                    {p.gaps.map((g) => (
+                      <span key={g} className='text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#F2E0DC] text-[#A6503E]'>{g}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
+          <p className='text-[11.5px] text-[#3C4A5E] mt-3 leading-relaxed'>
+            Match is how well your evidenced skills cover each role's core skills. Red tags are skills you are missing.
+          </p>
         </div>
-
       </div>
     </div>
   )

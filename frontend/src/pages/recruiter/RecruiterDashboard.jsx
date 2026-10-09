@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 const stats = [
   { label: 'Open roles', value: '4' },
@@ -26,9 +27,15 @@ const matchColor = (match) => {
   return 'bg-[#F2E0DC] text-[#A6503E]'
 }
 
+
 const RecruiterDashboard = () => {
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
 
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login', { replace: true })
+  }
   return (
     <div className='p-5'>
 
@@ -37,12 +44,23 @@ const RecruiterDashboard = () => {
           <h1 className='text-2xl md:text-3xl font-medium text-[#0F1A2B]'>Good morning, David</h1>
           <p className='text-sm text-[#3C4A5E]/70 mt-1'>4 open roles are currently plotting matches</p>
         </div>
+          <div className='flex gap-3'>
+         <div className="flex items-center gap-3">
+          <span className="text-sm text-[#3C4A5E]">{user?.name}</span>
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1.5 rounded-lg text-sm border border-[#DBDCD3] text-[#0F1A2B] hover:bg-[#EEF0EC] cursor-pointer"
+          >
+            Log out
+          </button>
+        </div>
         <button
           onClick={() => navigate('/recruiter/create')}
           className='bg-[#C98A3E] hover:bg-[#B67B33] rounded py-2 px-3.5 text-sm text-white font-medium transition-colors'
         >
           + Post a role
         </button>
+        </div>
       </div>
 
       <div className='grid grid-cols-2 md:grid-cols-4 gap-px bg-[#DBDCD3] border border-[#DBDCD3] rounded-md overflow-hidden mb-5'>

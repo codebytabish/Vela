@@ -43,7 +43,7 @@ export const getRecruiterNav = (isOrgAdmin) => [
           { to: '/recruiter/company', label: 'Company profile' },
           { to: '/recruiter/team', label: 'Manage Recruiters' },
           { to: '/recruiter/permissions', label: 'Roles & Permissions' },
-          // add Manage Recruiters, Roles & Permissions, etc. here as you build them
+          // will add Manage Recruiters, Roles & Permissions, etc. here as i build them
         ],
       }]
     : []),

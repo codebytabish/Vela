@@ -1,152 +1,170 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { api } from '../../lib/api'
 
-const initialProjects = [
-  {
-    id: 1,
-    title: 'Scheduling platform redesign',
-    description: 'End-to-end redesign of patient scheduling flow, reducing booking time 40%.',
-    tag: 'Healthcare',
-    tagColor: 'bg-[#E4EAE6] text-[#5C7A6E]',
-  },
-  {
-    id: 2,
-    title: 'Design system: Meridian',
-    description: 'Built and scaled a component library adopted across 4 product teams.',
-    tag: 'Systems',
-    tagColor: 'bg-[#F5E7D2] text-[#8A5D22]',
-  },
-]
+const card = 'bg-white border border-[#DBDCD3] rounded-md p-5'
+const inputClass =
+  'w-full px-3 py-2.5 border border-[#DBDCD3] rounded-[5px] text-[13.5px] text-[#0F1A2B] bg-[#EEF0EC] focus:outline-none focus:border-[#C98A3E] transition-colors'
+const labelClass = 'block text-[11.5px] font-mono uppercase tracking-wide text-[#3C4A5E] mb-1.5'
+const btnPrimary =
+  'cursor-pointer bg-[#C98A3E] hover:bg-[#B67B33] rounded py-2 px-3.5 text-sm text-white font-medium transition-colors disabled:opacity-60'
+const btnGhost =
+  'cursor-pointer border border-[#DBDCD3] hover:border-[#0F1A2B] rounded py-2 px-3.5 text-sm text-[#0F1A2B] transition-colors'
 
-const ProjectIcon = () => (
-  <svg viewBox='0 0 24 24' fill='none' className='w-10 h-10 opacity-50'>
-    <rect x='3' y='4' width='18' height='14' rx='1.5' stroke='#0F1A2B' strokeWidth='1.4' />
-    <path d='M3 16l5-5 4 4 5-6 4 5' stroke='#0F1A2B' strokeWidth='1.4' />
-  </svg>
-)
+const EMPTY = { title: '', description: '', tag: '', link: '' }
 
 const Portfolio = () => {
-  const [projects, setProjects] = useState(initialProjects)
-  const [showForm, setShowForm] = useState(false)
-  const [newProject, setNewProject] = useState({ title: '', description: '', tag: '' })
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [editing, setEditing] = useState(null) // null | 'new' | item id
+  const [form, setForm] = useState(EMPTY)
+  const [saving, setSaving] = useState(false)
 
-  const setField = (field) => (e) => setNewProject({ ...newProject, [field]: e.target.value })
+  useEffect(() => {
+    api('/portfolio')
+      .then((d) => setItems(d.items))
+      .catch((e) => setError(e.message || 'Could not load your portfolio'))
+      .finally(() => setLoading(false))
+  }, [])
 
-  const handleAddProject = () => {
-    if (!newProject.title.trim()) return
-    setProjects([
-      ...projects,
-      {
-        id: Date.now(),
-        title: newProject.title,
-        description: newProject.description,
-        tag: newProject.tag || 'Project',
-        tagColor: 'bg-[#EEF0EC] text-[#3C4A5E]',
-      },
-    ])
-    setNewProject({ title: '', description: '', tag: '' })
-    setShowForm(false)
+  const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const openNew = () => { setForm(EMPTY); setEditing('new'); setError('') }
+  const openEdit = (it) => {
+    setForm({ title: it.title, description: it.description || '', tag: it.tag || '', link: it.link || '' })
+    setEditing(it._id)
+    setError('')
+  }
+  const close = () => { setEditing(null); setForm(EMPTY); setError('') }
+
+  const save = async () => {
+    if (!form.title.trim()) { setError('Title is required'); return }
+    setSaving(true)
+    setError('')
+    try {
+      if (editing === 'new') {
+        const d = await api('/portfolio', { method: 'POST', body: form })
+        setItems((list) => [...list, d.item])
+      } else {
+        const d = await api(`/portfolio/${editing}`, { method: 'PUT', body: form })
+        setItems((list) => list.map((i) => (i._id === editing ? d.item : i)))
+      }
+      setEditing(null)
+      setForm(EMPTY)
+    } catch (e) {
+      setError(e.message || 'Could not save')
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const removeProject = (id) => {
-    setProjects(projects.filter((p) => p.id !== id))
+  const remove = async (it) => {
+    if (!window.confirm(`Delete "${it.title}"?`)) return
+    try {
+      await api(`/portfolio/${it._id}`, { method: 'DELETE' })
+      setItems((list) => list.filter((i) => i._id !== it._id))
+      if (editing === it._id) close()
+    } catch (e) {
+      setError(e.message || 'Could not delete')
+    }
   }
 
-  const inputClass = 'w-full px-3 py-2 border border-[#DBDCD3] rounded-[5px] text-[13px] text-[#0F1A2B] bg-[#EEF0EC] focus:outline-none focus:border-[#C98A3E] transition-colors'
+  const renderForm = () => (
+    <div className={`${card} border-[#C98A3E]`}>
+      <div className='mb-3.5'>
+        <label className={labelClass}>Title</label>
+        <input className={inputClass} value={form.title} onChange={set('title')} placeholder='Scheduling platform redesign' autoFocus />
+      </div>
+      <div className='mb-3.5'>
+        <label className={labelClass}>Description</label>
+        <textarea
+          className={`${inputClass} min-h-[90px] resize-y`}
+          value={form.description}
+          onChange={set('description')}
+          placeholder='What you built, your role, and the result (numbers help)'
+        />
+      </div>
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4'>
+        <div>
+          <label className={labelClass}>Tag</label>
+          <input className={inputClass} value={form.tag} onChange={set('tag')} placeholder='Healthcare' />
+        </div>
+        <div>
+          <label className={labelClass}>Link (optional)</label>
+          <input className={inputClass} value={form.link} onChange={set('link')} placeholder='github.com/you/project' />
+        </div>
+      </div>
+      <div className='flex gap-2.5'>
+        <button onClick={save} disabled={saving} className={btnPrimary}>
+          {saving ? 'Saving…' : editing === 'new' ? 'Add case study' : 'Save changes'}
+        </button>
+        <button onClick={close} className={btnGhost}>Cancel</button>
+      </div>
+    </div>
+  )
+
+  if (loading) return <div className='p-5 text-sm text-[#3C4A5E]'>Loading your portfolio…</div>
 
   return (
     <div className='p-5'>
-
-      <div className='flex justify-between items-center mb-5 pb-5 border-b border-[#DBDCD3]'>
+      <div className='flex justify-between items-center mb-5 border-b border-[#DBDCD3] pb-5'>
         <div>
-          <h1 className='text-2xl md:text-3xl font-medium text-[#0F1A2B]'>Portfolio</h1>
+          <h1 className='text-2xl font-serif font-bold text-[#0F1A2B]'>Portfolio</h1>
           <p className='text-sm text-[#3C4A5E]/70 mt-1'>Case studies recruiters see alongside your resume</p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className='bg-[#C98A3E] hover:bg-[#B67B33] rounded py-2 px-3.5 text-sm text-white font-medium transition-colors'
-        >
-          + Add project
-        </button>
+        <button onClick={openNew} disabled={editing === 'new'} className={btnPrimary}>+ Add project</button>
       </div>
 
-      {/* inline add-project form */}
-      {showForm && (
-        <div className='bg-white border border-[#DBDCD3] rounded-md p-6 mb-5'>
-          <h3 className='font-serif text-base font-semibold text-[#0F1A2B] mb-4'>New project</h3>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-3.5'>
-            <input
-              className={inputClass}
-              placeholder='Project title'
-              value={newProject.title}
-              onChange={setField('title')}
-            />
-            <input
-              className={inputClass}
-              placeholder='Tag (e.g. Healthcare, Systems)'
-              value={newProject.tag}
-              onChange={setField('tag')}
-            />
-          </div>
-          <textarea
-            className={`${inputClass} min-h-[70px] resize-y mb-3.5`}
-            placeholder='Short description of the project'
-            value={newProject.description}
-            onChange={setField('description')}
-          />
-          <div className='flex gap-2.5'>
-            <button
-              onClick={handleAddProject}
-              className='bg-[#0F1A2B] hover:bg-[#1C2C45] rounded py-2 px-3.5 text-sm text-white font-medium transition-colors'
-            >
-              Save project
-            </button>
-            <button
-              onClick={() => setShowForm(false)}
-              className='border border-[#DBDCD3] hover:border-[#0F1A2B] rounded py-2 px-3.5 text-sm text-[#0F1A2B] transition-colors'
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+      {error && editing === null && <p className='text-sm text-[#A6503E] mb-3'>{error}</p>}
+      {error && editing !== null && <p className='text-sm text-[#A6503E] mb-3'>{error}</p>}
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        {items.map((it) =>
+          editing === it._id ? (
+            <div key={it._id}>{renderForm()}</div>
+          ) : (
+            <div key={it._id} className={card}>
+              <div className='flex justify-between items-start gap-3 mb-2'>
+                <h3 className='font-serif text-base font-semibold text-[#0F1A2B]'>{it.title}</h3>
+                <div className='flex items-center gap-3 shrink-0'>
+                  <button onClick={() => openEdit(it)} className='text-xs font-semibold text-[#C98A3E] hover:underline'>Edit</button>
+                  <button onClick={() => remove(it)} aria-label='Delete' className='text-lg leading-none text-[#3C4A5E] hover:text-[#A6503E]'>×</button>
+                </div>
+              </div>
+              {it.description && (
+                <p className='text-[13px] text-[#2B333F] leading-relaxed whitespace-pre-line mb-3'>{it.description}</p>
+              )}
+              <div className='flex items-center gap-3'>
+                {it.tag && (
+                  <span className='text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#E4EAE6] text-[#5C7A6E]'>{it.tag}</span>
+                )}
+                {it.link && (
+                  <a href={it.link} target='_blank' rel='noopener noreferrer' className='text-xs font-semibold text-[#C98A3E] hover:underline'>
+                    View →
+                  </a>
+                )}
+              </div>
+            </div>
+          )
+        )}
+
+        {editing === 'new' ? (
+          renderForm()
+        ) : (
+          <button
+            onClick={openNew}
+            className='cursor-pointer border-2 border-dashed border-[#DBDCD3] hover:border-[#C98A3E] rounded-md p-5 min-h-[120px] text-sm font-medium text-[#3C4A5E] hover:text-[#C98A3E] transition-colors'
+          >
+            + Add a case study
+          </button>
+        )}
+      </div>
+
+      {items.length === 0 && editing !== 'new' && (
+        <p className='text-sm text-[#3C4A5E] mt-4'>
+          No case studies yet. Add 2 or 3 projects you are proud of, with what you built and the result.
+        </p>
       )}
-
-      {/* project grid */}
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
-
-        {projects.map((p) => (
-          <div key={p.id} className='bg-white border border-[#DBDCD3] rounded-md overflow-hidden group'>
-            <div className='h-[120px] bg-gradient-to-br from-[#E4EAE6] to-[#F5E7D2] relative flex items-center justify-center'>
-              <ProjectIcon />
-              <button
-                onClick={() => removeProject(p.id)}
-                className='absolute top-2 right-2 w-6 h-6 rounded-full bg-white/80 text-[#A6503E] text-xs opacity-0 group-hover:opacity-100 transition-opacity'
-                aria-label={`Remove ${p.title}`}
-              >
-                ×
-              </button>
-            </div>
-            <div className='p-4'>
-              <h4 className='text-sm font-semibold text-[#0F1A2B] mb-1'>{p.title}</h4>
-              <p className='text-xs text-[#3C4A5E] leading-relaxed mb-2.5'>{p.description}</p>
-              <span className={`text-[11px] font-mono px-2.5 py-1 rounded-full ${p.tagColor}`}>
-                {p.tag}
-              </span>
-            </div>
-          </div>
-        ))}
-
-        {/* add-project placeholder tile */}
-        <button
-          onClick={() => setShowForm(true)}
-          className='border-[1.5px] border-dashed border-[#DBDCD3] hover:border-[#C98A3E] rounded-md min-h-[210px] flex flex-col items-center justify-center gap-2 text-[#3C4A5E] text-sm transition-colors'
-        >
-          <svg width='28' height='28' viewBox='0 0 24 24' fill='none'>
-            <path d='M12 5v14M5 12h14' stroke='#3C4A5E' strokeWidth='1.6' />
-          </svg>
-          Add a case study
-        </button>
-
-      </div>
     </div>
   )
 }

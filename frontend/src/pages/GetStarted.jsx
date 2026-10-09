@@ -51,11 +51,12 @@ const [accountType, setAccountType] = useState('')
 
 
              <select 
+             
              className={inputClass}
               value={accountType}
   onChange={(e) => setAccountType(e.target.value)}
               >
-      <option value=''>Get Started as a </option>
+      <option value=''  disabled>Get Started as a </option>
       <option value='candidate'>Candidate</option>
       <option value='employer'>Employer</option>
       

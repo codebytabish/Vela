@@ -6,21 +6,21 @@ const Hero = () => {
     <div className='grid grid-cols-1 md:grid-cols-2 gap-10 bg-[#EEF0EC] px-5 md:px-10 py-14 lg:py-20 items-center'>
 
       <div>
-        <p className="text-xs font-bold text-[#5C7A6E]/50">
+        <p className="text-sm font-bold font-jetbrains text-[#5C7A6E]">
           — CAREER NAVIGATION, PLOTTED BY AI
         </p>
 
-        <h1 className='text-3xl md:text-5xl lg:text-6xl pt-3 text-[#0F1A2B] font-bold leading-[1.05]'>
+        <h1 className='text-3xl md:text-5xl lg:text-6xl pt-3 text-[#0F1A2B] font-fraunces font-bold leading-[1.05]'>
           Chart the route
         </h1>
-        <h1 className='text-3xl md:text-5xl lg:text-6xl text-[#0F1A2B] font-bold leading-[1.05]'>
+        <h1 className='text-3xl md:text-5xl lg:text-6xl text-[#0F1A2B]  font-fraunces font-bold leading-[1.05]'>
           from resume to
         </h1>
-        <h1 className='text-3xl md:text-5xl lg:text-6xl font-bold text-[#A6503E]/80 leading-[1.05]'>
+        <h1 className='text-3xl md:text-5xl lg:text-6xl font-fraunces italic text-[#C98A3E] leading-[1.05]'>
           the right role.
         </h1>
 
-        <p className='pt-5 text-base text-[#3C4A5E] max-w-[460px] leading-relaxed'>
+        <p className='pt-5 text-base text-[#3C4A5E] font-sans max-w-[460px] leading-relaxed'>
           Vela reads your resume the way a hiring system does, plots it against roles
           worth pursuing, and scores the fit — so candidates apply with confidence and
           recruiters shortlist in minutes, not weeks.
@@ -29,13 +29,13 @@ const Hero = () => {
         <div className='flex flex-wrap gap-3 mt-10'>
           <Link
             to="/get-started"
-            className="bg-[#0F1A2B] text-white text-sm font-semibold px-5 py-2.5 rounded-md hover:bg-[#1C2C45] transition-colors"
+            className="bg-[#0F1A2B] text-[#fff] text-sm font-sans font-semibold px-5 py-2.5 rounded-md hover:bg-[#1C2C45] transition-colors"
           >
             Plot your first match
           </Link>
           <Link
             to="/recruiter"
-            className="text-[#0F1A2B] border border-[#DBDCD3] hover:border-black text-sm font-semibold px-5 py-2.5 rounded-md transition-colors"
+            className="text-[#0F1A2B] border border-[#DBDCD3] font-sans hover:border-black text-sm font-semibold px-5 py-2.5 rounded-md transition-colors"
           >
             See it for recruiters
           </Link>
@@ -43,16 +43,16 @@ const Hero = () => {
 
         <div className="flex flex-wrap gap-7 mt-11 pt-6 border-t border-[#DBDCD3]">
           <div>
-            <div className="font-serif text-2xl font-semibold text-[#0F1A2B]">2.1M</div>
-            <div className="text-[11.5px] text-[#3C4A5E] mt-0.5">Resumes charted</div>
+            <div className=" text-2xl font-semibold font-fraunces text-[#0F1A2B]">2.1M</div>
+            <div className="text-[11.5px] text-[#3C4A5E] font-sans mt-0.5">Resumes charted</div>
           </div>
           <div>
-            <div className="font-serif text-2xl font-semibold text-[#0F1A2B]">94%</div>
-            <div className="text-[11.5px] text-[#3C4A5E] mt-0.5">Parsing accuracy</div>
+            <div className=" text-2xl font-semibold font-fraunces text-[#0F1A2B]">94%</div>
+            <div className="text-[11.5px] text-[#3C4A5E] font-sans mt-0.5">Parsing accuracy</div>
           </div>
           <div>
-            <div className="font-serif text-2xl font-semibold text-[#0F1A2B]">6.4s</div>
-            <div className="text-[11.5px] text-[#3C4A5E] mt-0.5">Avg. match time</div>
+            <div className=" text-2xl font-semibold font-fraunces text-[#0F1A2B]">6.4s</div>
+            <div className="text-[11.5px] text-[#3C4A5E] font-sans mt-0.5">Avg. match time</div>
           </div>
         </div>
       </div>

@@ -23,29 +23,40 @@ const [formData, setFormData] = useState({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const set = (field) => (e) => setFormData({ ...formData, [field]: e.target.value })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-   if (accountType === 'employer' && !formData.companyName.trim()) {
-  toast.error('Enter your company name.')
-  return
+ const handleSubmit = async (e) => {
+  e.preventDefault()
 
-    }
-    setIsSubmitting(true)
-    try {
-      // TODO: replace with real signup API call 
-      // await api.post('/auth/register', formData)
-      toast.success('Account created')
-       if (accountType === 'employer'){
-        navigate('/recruiter')
-       }else
-      navigate('/candidate')
-    } catch (err) {
-      toast.error("Couldn't create your account. Try again.")
-    } finally {
-      setIsSubmitting(false)
-    }
+  if (accountType === 'employer' && !formData.companyName.trim()) {
+    toast.error('Enter your company name.')
+    return
   }
 
+  setIsSubmitting(true)
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, accountType }),
+    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      toast.error(data.message || "Couldn't create your account.")
+      return
+    }
+
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data.user))
+
+    toast.success('Account created')
+    navigate(accountType === 'employer' ? '/recruiter' : '/candidate')
+  } catch (err) {
+    console.error(err)
+    toast.error("Couldn't reach the server. Is the backend running?")
+  } finally {
+    setIsSubmitting(false)
+  }
+}
   return (
     <div className="min-h-screen" style={{ background: "#EEF0EC" }}>
       <div className="px-8 py-3 border-b border-[#DBDCD3] text-sm text-[#3C4A5E]">
@@ -89,9 +100,9 @@ const [formData, setFormData] = useState({
 
             <input
               type="password"
-              placeholder="Password (min 6 characters)"
+              placeholder="Password (min 8 characters)"
               required
-              minLength={6}
+              minLength={8}
               className={inputClass}
               value={formData.password}
               onChange={set('password')}
@@ -112,8 +123,8 @@ const [formData, setFormData] = useState({
       <option value=''>Select industry</option>
       <option value='healthcare'>Healthcare</option>
       <option value='technology'>Technology</option>
-      <option value='technology'>Finance</option>
-      <option value='technology'>Law</option>
+      <option value='finance'>Finance</option>
+      <option value='law'>Law</option>
       
     </select>
   </>
